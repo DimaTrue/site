@@ -1,10 +1,10 @@
 body{
-    background: red;
+    background: greenyellow;
     width: 970px;
     margin: 0 auto;
 }
 h1{
-    font-size: 42px;
+    font-size: 80px;
 }
 p{
     font-size: 30px;
