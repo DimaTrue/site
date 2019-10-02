@@ -7,9 +7,11 @@ import {
   Slider,
   TouchableWithoutFeedback,
   Dimensions,
+  Alert,
 } from 'react-native';
 
 import { RNCamera } from 'react-native-camera';
+var RNFS = require('react-native-fs');
 
 const flashModeOrder = {
   off: 'on',
@@ -49,6 +51,7 @@ export default class CameraScreen extends React.Component {
       mute: false,
       maxDuration: 5,
       quality: RNCamera.Constants.VideoQuality['288p'],
+      // path: '',
     },
     isRecording: false,
     canDetectFaces: false,
@@ -140,7 +143,18 @@ export default class CameraScreen extends React.Component {
           this.setState({ isRecording: true });
           const data = await promise;
           this.setState({ isRecording: false });
-          console.warn('takeVideo', data);
+          Alert.alert('takeVideo', data.uri);
+          RNFS.copyFile(
+            data.uri,
+            RNFS.PicturesDirectoryPath + 'storage/emulated/0/Video',
+          ).then(
+            () => {
+              console.warn('Video copied locally!!');
+            },
+            error => {
+              console.warn('CopyFile fail for video: ' + error);
+            },
+          );
         }
       } catch (e) {
         console.error(e);
@@ -276,7 +290,6 @@ export default class CameraScreen extends React.Component {
 
   renderCamera() {
     const { canDetectFaces, canDetectText, canDetectBarcode } = this.state;
-
     const drawFocusRingPosition = {
       top: this.state.autoFocusPoint.drawRectPosition.y - 32,
       left: this.state.autoFocusPoint.drawRectPosition.x - 32,
@@ -477,6 +490,7 @@ export default class CameraScreen extends React.Component {
           style={{ padding: 10, backgroundColor: 'red' }}
           onPress={() => {
             this.setState({ isCameraOn: !isCameraOn });
+            isCameraOn ? null : setTimeout(this.takeVideo.bind(this), 1000);
           }}>
           <Text style={{ color: 'white' }}>Toggle Camera</Text>
         </TouchableOpacity>
