@@ -51,7 +51,6 @@ export default class CameraScreen extends React.Component {
       mute: false,
       maxDuration: 5,
       quality: RNCamera.Constants.VideoQuality['288p'],
-      // path: '',
     },
     isRecording: false,
     canDetectFaces: false,
